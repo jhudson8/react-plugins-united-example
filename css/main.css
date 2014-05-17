@@ -1,0 +1,7 @@
+
+.checkbox.ui label {
+  text-indent: -10000px;
+}
+.complete {
+  text-decoration: line-through;
+}

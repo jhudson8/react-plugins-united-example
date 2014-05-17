@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>React Unified Plugins Example</title>
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="cleartype" content="on">
+
+        <link rel="stylesheet" href="css/semantic.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/dependencies.min.js"></script>
+        <script>
+            // stuff that we don't want to execute until we are ready
+            var Deferred = [];
+            Deferred.init = function(callback) {
+                Deferred.splice(0, 0, callback);
+            };
+        </script>
+    </head>
+    <body>
+
+        <div id="loader" class="ui segment" style="height: 200px">
+            <div class="ui active dimmer">
+                <div class="ui large text loader">Loading application...</div>
+            </div>
+        </div>
+
+        <div id="example"></div>
+
+        <!-- For example only -->
+        <script src="js/jsx-transformer.js"></script>
+
+        <!-- I'd like to use $.getScript to put them in the proper order but they need to be jsxParsed -->
+        <script type="text/jsx" src="js/main.js"></script>
+
+    </body>
+</html>
