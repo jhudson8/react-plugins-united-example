@@ -79,7 +79,7 @@ var Text = rsui.input.Text,
   App.on('async', function(event, model, lifecycle, options) {
     var pathKey = event + ':' + _.result(model, 'url');
     // bypass the actual server call
-    options.abort = function() {
+    options.intercept = function() {
       var handler;
       _.each(responseHandlers, function(_handler, pattern) {
         var regex = new RegExp(pattern);
@@ -179,8 +179,10 @@ var Text = rsui.input.Text,
       this.on('add', function(model) {
         model.on('change', function() {
           self.trigger('change', model);
+          self.triggerIncomplete();
         });
-      });
+        this.triggerIncomplete();
+      }, this);
     },
 
     findIncomplete: function() {
@@ -203,6 +205,13 @@ var Text = rsui.input.Text,
 
     save: function() {
       this.sync('update', this);
+      this.triggerIncomplete();
+    },
+
+    triggerIncomplete: function() {
+      var incomplete = this.findIncomplete();
+      App.incomplete = incomplete;
+      App.trigger('incomplete:change', incomplete);
     }
   });
   Tasks.areAnyComplete = function(models) {
@@ -215,17 +224,52 @@ var Text = rsui.input.Text,
   /////////////////////////////
 
   /**
+   * Overview page
+   */
+  var Overview = React.createClass({
+    render: function() {
+      return (
+        <div>
+          <h2>Another ToDo Example</h2>
+          <p>
+            This is an example to demonstrate <a href="http://facebook.github.io/react/">React</a> with a set of plugins that work very well together but can be used individually.
+            <ul>
+              <li><a href="https://github.com/jhudson8/react-mixin-manager">react-mixin-manager</a>: React mixin registration manager which allows mixins to have dependencies</li>
+              <li><a href="https://github.com/jhudson8/react-events">react-events</a>: Declarative managed event bindings for react components</li>
+              <li><a href="https://github.com/jhudson8/react-backbone">react-backbone</a>: <a href="http://backbonejs.org/">Backbone</a>-aware mixins for React </li>
+              <li><a href="https://github.com/jhudson8/backbone-async-event">backbone-async-event</a>: Simple <a href="http://backbonejs.org/">Backbone</a>- plugin that emits specific events when ajax requests are made</li>
+              <li><a href="https://github.com/jhudson8/react-semantic-ui">react-semantic-ui</a>: <a href="http://semantic-ui.com/">Semantic UI</a> React components</li>
+            </ul>
+          </p>
+
+          <a target="source" href="https://github.com/jhudson8/react-plugins-united-example/blob/gh-pages/js/main.js">View source code</a>
+
+          <p>
+            <strong>Note:</strong>: a lag is simulated to demonstrate backbone model ajax event capturing (<a href="https://github.com/jhudson8/backbone-async-event">backbone-async-event</a>)
+          </p>
+        </div>
+      );
+    }
+  });
+
+  /**
    * the "Things to do" menul label that shows a dynamic task count flag
    */
   var ToDoLabel = React.createClass({
-    mixins: ['modelChangeListener'],
+    mixins: ['modelChangeListener', 'events'],
+    events: {
+      'app:incomplete:change': 'onIncompleteChange'
+    },
     render: function() {
       var rtn = ['Things to do'],
-          incomplete = [] || this.getModel().findIncomplete();
+          incomplete = App.incomplete || [];
       if (incomplete.length) {
         rtn.push(<div className="floating ui red label">{incomplete.length}</div>);
       }
       return <span>{rtn}</span>;
+    },
+    onIncompleteChange: function() {
+      this.forceUpdate();
     }
   });
 
@@ -287,9 +331,10 @@ var Text = rsui.input.Text,
     }}
   ];
   var ShowTasks = React.createClass({
-    mixins: ['view', 'modelUpdateOn', 'modelLoadOn', 'triggerWith'],
+    mixins: ['view', 'modelLoadOn', 'triggerWith'],
     events: {
-      'app:search': 'onSearched'
+      'app:search': 'doUpdate',
+      'model:change': 'doUpdate'
     },
     render: function() {
       var rtn,
@@ -316,7 +361,7 @@ var Text = rsui.input.Text,
 
       return new Loader({loading: this.state && this.state.loading}, rtn);
     },
-    onSearched: function() {
+    doUpdate: function() {
       this.forceUpdate();
     }
   });
@@ -325,6 +370,7 @@ var Text = rsui.input.Text,
    * Main app container with the header menu
    */
   var menuItems = [
+    {key: "overview", label: 'Overview', href: '#overview'},
     {key: "list", label: <ToDoLabel/>, icon: 'inbox', href: '#list'},
     {key: "create", label: "New item...", icon: 'add', href: '#create'}
   ];
@@ -365,9 +411,14 @@ var Text = rsui.input.Text,
   var savedCreateTask;
   var Router = Backbone.Router.extend({
     routes: {
-      '': 'list',
+      '': 'overview',
+      'overview': 'overview',
       'list': 'list',
       'create': 'create'
+    },
+
+    overview: function() {
+      this.showView('overview', new Overview());
     },
 
     list: function() {
@@ -377,7 +428,8 @@ var Text = rsui.input.Text,
       view.on('remove-completed', function() {
         tasks.removeComplete();
         tasks.save();
-      });
+        this.list();
+      }, this);
       this.showView('list', view);
     },
 
@@ -419,6 +471,8 @@ var Text = rsui.input.Text,
   // Now, to make it happen
   $(document).ready(function() {
     Backbone.history.start();
+    // load the tasks to see the menu item indicator
+    new Tasks().fetch();
   });
 
 })();
