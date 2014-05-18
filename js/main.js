@@ -94,7 +94,7 @@ var Text = rsui.input.Text,
       // simulate some latency
       setTimeout(function() {
         options.success(response);
-      }, 1000);
+      }, 750);
     };
   });
 
