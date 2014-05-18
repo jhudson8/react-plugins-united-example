@@ -2,13 +2,20 @@
 $('#loader').hide();
 
 (function() {
+
 // These are the components we are using (see https://github.com/jhudson8/react-semantic-ui)
 var Text = rsui.input.Text,
     TextArea = rsui.input.TextArea,
     Checkbox = rsui.input.Checkbox,
     Menu = rsui.layout.Menu,
     Button = rsui.form.Button,
-    Table = rsui.layout.Table;
+    Table = rsui.layout.Table,
+    Loader = rsui.layout.Loader;
+
+
+  /////////////////////////////
+  // BASE APPLICATION SETUP
+  /////////////////////////////
 
   var App = _.extend({
     Util: {}
@@ -21,12 +28,81 @@ var Text = rsui.input.Text,
   });
 
   // create a mixin group that includes all mixins we'll use for our top level components (see https://github.com/jhudson8/react-mixin-manager)
-  React.mixins.alias('view', 'events', 'modelChangeListener');
+  React.mixins.alias('view', 'events');
+
+  // allow App to listen to all model async events (see https://github.com/jhudson8/backbone-async-event)
+  Backbone.asyncHandler = App;
 
 
-  /*****************
-   ** UTILITY METHODS
-   *****************/
+  /////////////////////////////
+  // FAKE OUT SOME SERVICE ENDPOINTS
+  /////////////////////////////
+
+  // (see https://github.com/jhudson8/backbone-async-event)
+  var taskDataHelper = {
+    get: function(callback) {
+      return JSON.parse(localStorage.getItem('tasks') || '[]');
+    },
+    set: function(list) {
+      localStorage.setItem('tasks', JSON.stringify(list || [])); 
+    }
+  };
+  var responseHandlers = {
+    'read:tasks': taskDataHelper.get,
+    'create:task': function(model) {
+      var id = _.uniqueId(),
+          attr = model.attributes,
+          current = taskDataHelper.get(),
+          created = new Date().getTime(),
+          tasks = taskDataHelper.get();
+
+      model.set({id: created, created: created}, {silent: true});
+      tasks.push(model.attributes);
+      taskDataHelper.set(tasks);
+      return tasks;
+    },
+    'update:task/.*': function(model) {
+      var tasks = taskDataHelper.get().map(function(task) {
+        if (task.id === model.id) {
+          task.completed = model.attributes.completed;
+        }
+        return task;
+      });
+      taskDataHelper.set(tasks);
+      return tasks;
+    },
+    'update:tasks': function(tasks) {
+      var toSet = _.pluck(tasks.models, 'attributes');
+      taskDataHelper.set(toSet);
+    }
+  };
+  App.on('async', function(event, model, lifecycle, options) {
+    var pathKey = event + ':' + _.result(model, 'url');
+    // bypass the actual server call
+    options.abort = function() {
+      var handler;
+      _.each(responseHandlers, function(_handler, pattern) {
+        var regex = new RegExp(pattern);
+        if (!handler && pathKey.match(pattern)) {
+          handler = _handler;
+        }
+      });
+      if (!handler) {
+        throw "unknown handler: " + pathKey;
+      }
+      var response = handler(model);
+      // simulate some latency
+      setTimeout(function() {
+        options.success(response);
+      }, 1000);
+    };
+  });
+
+
+  /////////////////////////////
+  // UTILITY METHODS
+  /////////////////////////////
+
   App.Util.formatDate = function(date) {
     if (!date) {
       return 'when I get around to it';
@@ -48,10 +124,17 @@ var Text = rsui.input.Text,
   };
 
 
-  /*****************
-   ** MODELS / COLLECTIONS
-   *****************/
+  /////////////////////////////
+  // MODELS / COLLECTIONS
+  /////////////////////////////
+
+  /**
+   * Single task model
+   */
   var Task = Backbone.Model.extend({
+    url: function() {
+      return 'task' + (this.id ? ('/' + this.id) : '');
+    },
     validate: function(attributes, options) {
       var rtn = [];
       if (!options || !options.allowEmpty) {
@@ -74,59 +157,71 @@ var Text = rsui.input.Text,
 
     isComplete: function() {
       return this.get('completed');
+    },
+
+    findByQuery: function(query) {
+      return this.filter(function(item) {
+        return !query || item.get('name').indexOf(query) >= 0;
+      });
     }
   });
 
+  /**
+   * Collection of tasks
+   */
   var Tasks = Backbone.Collection.extend({
+    url: 'tasks',
     model: Task,
+
+    initialize: function() {
+      // trigger change on the collection when models change
+      var self = this;
+      this.on('add', function(model) {
+        model.on('change', function() {
+          self.trigger('change', model);
+        });
+      });
+    },
 
     findIncomplete: function() {
       return this.filter(function(task) {
         return !task.get('completed');
       });
+    },
+
+    removeComplete: function() {
+      this.reset(this.filter(function(model) {
+        return !model.get('completed');
+      }));
+    },
+
+    findFiltered: function(term) {
+      return this.filter(function(task) {
+        return !term || task.get('name').indexOf(term) >= 0;
+      });
+    },
+
+    save: function() {
+      this.sync('update', this);
     }
   });
+  Tasks.areAnyComplete = function(models) {
+    return !!_.findWhere(_.pluck(models, 'attributes'), {completed: true});
+  };
 
 
-  /******************
-   * Static variable references (this example does not have persistance)
-   ******************/
-      // all registered tasks
-  var ALL_TASKS = new Tasks(),
-      // all tasks that match the current search token
-      FILTERED_TASKS = new Tasks(),
-      // the current new tasks that is being edited (only to keep state if we switch tabs)
-      NEW_TASK = new Task(),
-      // the current search filter token
-      searchFilter;
+  /////////////////////////////
+  // COMPONENTS
+  /////////////////////////////
 
-  // keep the filtered tasks in sync with the set of all availablel tasks
-  function refreshFilteredTasks() {
-    FILTERED_TASKS.reset(ALL_TASKS.filter(function(item) {
-      return !searchFilter || item.get('name').indexOf(searchFilter) >= 0;
-    }));
-  }
-  _.each(['add', 'remove', 'reset'], function(event) {
-    ALL_TASKS.on(event, refreshFilteredTasks);
-  });
-
-  // listen for the search term update event and update the filtered set
-  App.on('search', function(term) {
-    searchFilter = term;
-    refreshFilteredTasks();
-  });
-
-
-  /*****************
-   ** COMPONENTS
-   *****************/
-
-  // the "Things to do" menul label that shows a dynamic task count flag
+  /**
+   * the "Things to do" menul label that shows a dynamic task count flag
+   */
   var ToDoLabel = React.createClass({
     mixins: ['modelChangeListener'],
     render: function() {
-      var rtn = ['Things to do']
-          incomplete = this.props.model.findIncomplete();
+      var rtn = ['Things to do'],
+          incomplete = [] || this.getModel().findIncomplete();
       if (incomplete.length) {
         rtn.push(<div className="floating ui red label">{incomplete.length}</div>);
       }
@@ -134,20 +229,22 @@ var Text = rsui.input.Text,
     }
   });
 
-  // component used to create a new task
+  /**
+   * create a new task component
+   */
   var CreateTask = React.createClass({
-    mixins: ['view'],
+    mixins: ['view', 'triggerWith', 'modelAsyncListener'],
     render: function() {
-      var model = this.props.model;
+      var model = this.getModel();
       return (
         <form className="ui form" onSubmit={this.onSubmit}>
           <Text label="Task" model={model} key="name" name="taskName"/>
           <TextArea label="Description" model={model} key="description"/>
           <Text label="Complete by" placeholder="today|tomorrow|mm/dd" model={model} key="completeBy"/>
           <div className="ui large buttons">
-            <Button type="submit" className="positive">Save</Button>
+            <Button type="submit" className="positive" loadOn="create" model={model}>Save</Button>
             <div className="or"/>
-            <Button type="button" onClick={this.onCancel}>Cancel</Button>
+            <Button type="button" onClick={this.triggerWith('cancel')}>Cancel</Button>
           </div>
         </form>
       );
@@ -155,65 +252,81 @@ var Text = rsui.input.Text,
     componentDidMount: function() {
       $(this.getDOMNode()).find('input[name=taskName]').focus();
     },
-    onCancel: function() {
-      if (confirm('Are you sure you want to cancel?')) {
-        this.trigger('cancel');
-      }
-    },
     onSubmit: function(event) {
       event.preventDefault();
-      var model = this.props.model;
+      var model = this.getModel();
       if (model.isValid()) {
         // allow for decoupled task creation
-        App.trigger('task:create', model);
+        this.trigger('save', model);
       }
     }
   });
 
-  // table cell that is bound to the associated model and will display with a strikethrough if the model is complete
+  /**
+   * table cell that is bound to the associated model and will display with a strikethrough if the model is complete
+   */
   var CompleteCell = React.createClass({
-    mixin: ['modelChangeListener'],
+    mixins: ['modelChangeListener'],
     render: function() {
-      return <span className={this.props.model.isComplete() ? 'complete' : 'incomplete'}>{this.props.value}</span>
+      return <span className={this.getModel().isComplete() ? 'complete' : 'incomplete'}>{this.props.value}</span>
     }
   });
+  // and factory to quickly produce the CompleteCell
   function completedCellFactory(value, model) {
     return <CompleteCell model={model} value={value}/>
   }
 
-  // list component that shows the available (filtered) tasks
+  /**
+   * list component that shows the available (filtered) tasks
+   */
   var TASK_COLUMNS = [
     {key: 'name', label: 'task', factory: completedCellFactory},
     {key: 'completeBy', label: 'to be finished', factory: completedCellFactory, formatter: App.Util.formatDate},
     {key: 'completed', label: 'complete?', factory: function(value, model) {
-      return <Checkbox type="toggle" model={model} key="completed" label="Complete"/>
+      return <Checkbox type="toggle" model={model} key="completed" label="Complete?" onChange={function() {model.save();}}/>
     }}
   ];
   var ShowTasks = React.createClass({
-    mixins: ['view', 'modelChangeListener'],
+    mixins: ['view', 'modelUpdateOn', 'modelLoadOn', 'triggerWith'],
+    events: {
+      'app:search': 'onSearched'
+    },
     render: function() {
-      if (FILTERED_TASKS.length) {
+      var rtn,
+          tasks = this.getModel(),
+          filteredTasks = tasks.findFiltered(App.searchTerm),
+          anyComplete = Tasks.areAnyComplete(filteredTasks);
+      if (filteredTasks.length) {
         // we've got some tasks to show
-        return (
-          <div>
-            <Table cols={TASK_COLUMNS} entries={FILTERED_TASKS}/>
-          </div>
-        );
+        var children = [<Table className="task-list" cols={TASK_COLUMNS} entries={filteredTasks}/>];
+        if (anyComplete) {
+          children.push(
+            <Button className="circular negative tiny" icon="remove" onClick={this.triggerWith('remove-completed')}>Remove completed tasks</Button>
+          );
+        }
+        rtn = <div>{children}</div>;
       } else {
-        if (ALL_TASKS.length) {
+        if (tasks.length) {
           // no tasks to show because of the filter but there are some tasks
-          return <div className="yellow ui message">There are no tasks to see here but you have some if you remove the search filter</div>;
+          rtn = <div className="yellow ui message">There are no tasks to see here but you have some if you remove the search filter</div>;
         } else {
-          return <div className="yellow ui message">Woohoo!  There is nothing to do here</div>;
+          rtn = <div className="yellow ui message">Woohoo!  There is nothing to do here</div>;
         }
       }
+
+      return new Loader({loading: this.state && this.state.loading}, rtn);
+    },
+    onSearched: function() {
+      this.forceUpdate();
     }
   });
 
-  // Main app container with the header menu
+  /**
+   * Main app container with the header menu
+   */
   var menuItems = [
-    {key: "list", label: <ToDoLabel model={ALL_TASKS}/>, icon: 'inbox'},
-    {key: "create", label: "New item...", icon: 'add'}
+    {key: "list", label: <ToDoLabel/>, icon: 'inbox', href: '#list'},
+    {key: "create", label: "New item...", icon: 'add', href: '#create'}
   ];
   var AppContainer = React.createClass({
     mixins: ['view'],
@@ -222,17 +335,9 @@ var Text = rsui.input.Text,
       'ref:create:cancel': 'onCancel'
     },
     render: function() {
-      var child,
-          active = this.state && this.state.active || (ALL_TASKS.length ? 'list' : 'create');
-      if (active === 'create') {
-        child = new CreateTask({ref: 'create', model: NEW_TASK});
-      } else {
-        child = new ShowTasks({model: FILTERED_TASKS});
-      }
-
       return (
         <div>
-          <Menu ref="menu" active={active} items={menuItems} onChange={this.setActive} className="top attached segment">
+          <Menu ref="menu" active={this.props.menuKey} items={menuItems} onChange={this.setActive} className="top attached segment">
             <div className="right menu">
               <div className="item">
                 <div className="ui icon input">
@@ -243,46 +348,77 @@ var Text = rsui.input.Text,
             </div>
           </Menu>
 
-          <div id="page-container" className="ui bottom attached segment">{child}</div>
+          <div id="page-container" className="ui bottom attached segment">{this.props.children}</div>
         </div>
       );
     },
-    onCancel: function() {
-      // the task wasn't created but we still want to go to the list page
-      this.onTaskCreated();
-    },
-    onTaskCreated: function() {
-      this.setActive('list');
-      this.refs.menu.setActive('list');
-    },
     onSearchChange: function(e) {
       App.trigger('search', e.currentTarget.value);
-    },
-    setActive: function(data) {
-      this.setState({active: data.key || data});
     }
   });
 
-  /*****************
-   ** ACTIONS
-   *****************/
-  function onCreateTask(task) {
-    ALL_TASKS.add(task);
-    task.set({id: _.uniqueId()});
-    App.trigger('task:created', task);
-    NEW_TASK = new Task();
-  }
 
-  function onDeleteTask(task) {
-    ALL_TASKS.remove(task);
-    App.trigger('task:deleted', task);
-  }
+  /////////////////////////////
+  // ROUTER
+  /////////////////////////////
 
-  // App bindings
-  App.on('task:create', onCreateTask);
-  App.on('task:delete', onDeleteTask);
+  var savedCreateTask;
+  var Router = Backbone.Router.extend({
+    routes: {
+      '': 'list',
+      'list': 'list',
+      'create': 'create'
+    },
 
+    list: function() {
+      var tasks = new Tasks();
+      tasks.fetch();
+      var view = new ShowTasks({model: tasks, loadOn: 'read', updateOn: ['reset', 'change'] });
+      view.on('remove-completed', function() {
+        tasks.removeComplete();
+        tasks.save();
+      });
+      this.showView('list', view);
+    },
+
+    create: function() {
+      var task = savedCreateTask || new Task(),
+          createTaskView = new CreateTask({model: task});
+      createTaskView.on('save', function(task) {
+        task.save({}, {
+          success: function() {
+            Backbone.history.navigate('list', true);
+          }
+        });
+      });
+      createTaskView.on('cancel', function() {
+        if (confirm('are you sure you want to cancel?')) {
+          savedCreateTask = undefined;
+          Backbone.history.navigate('list', true);
+        }
+      });
+      this.showView('create', createTaskView);
+    },
+
+    showView: function(menuKey, view) {
+      var el = $('#example')[0];
+      React.unmountComponentAtNode(el);
+
+      // create the page container with the correct menu key
+      var container = <AppContainer menuKey={menuKey}>{view}</AppContainer>;
+      React.renderComponent(container, el);
+    }
+  });
+  new Router();
+
+  // listen for the search term update event and update the filtered set
+  App.on('search', function(term) {
+    App.searchTerm = term;
+  });
 
   // Now, to make it happen
-  React.renderComponent(<AppContainer/>, document.getElementById('example'));
+  $(document).ready(function() {
+    Backbone.history.start();
+  });
+
 })();
