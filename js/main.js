@@ -307,6 +307,20 @@ var Text = rsui.input.Text,
   });
 
   /**
+   * Inline Loading spinner
+   */
+  var InlineLoadingSpinner = React.createClass({
+    mixins: ['modelLoadOn'],
+    render: function() {
+      if (this.state && this.state.loading) {
+        return <i className="loading icon"></i>;
+      } else {
+        return <span/>;
+      }
+    }
+  });
+
+  /**
    * table cell that is bound to the associated model and will display with a strikethrough if the model is complete
    */
   var CompleteCell = React.createClass({
@@ -324,29 +338,35 @@ var Text = rsui.input.Text,
    * list component that shows the available (filtered) tasks
    */
   var TASK_COLUMNS = [
-    {key: 'name', label: 'task', factory: completedCellFactory},
-    {key: 'completeBy', label: 'to be finished', factory: completedCellFactory, formatter: App.Util.formatDate},
+    {key: 'name', label: 'task', factory: completedCellFactory, colClass: 'eight wide'},
+    {key: 'completeBy', label: 'to be finished', factory: completedCellFactory, formatter: App.Util.formatDate, colClass: 'five wide'},
     {key: 'completed', label: 'complete?', factory: function(value, model) {
-      return <Checkbox type="toggle" model={model} key="completed" label="Complete?" onChange={function() {model.save();}}/>
-    }}
+      return (<div>
+        <Checkbox type="toggle" model={model} key="completed" label="Complete?" onChange={function() {model.save();}}/>
+        <InlineLoadingSpinner model={model} loadOn="update"/>
+      </div>
+      );
+    }, colClass: 'three wide'},
   ];
   var ShowTasks = React.createClass({
     mixins: ['view', 'modelLoadOn', 'triggerWith'],
     events: {
       'app:search': 'doUpdate',
-      'model:change': 'doUpdate'
+      'model:change': 'doUpdate',
+      'model:reset': 'doUpdate',
     },
     render: function() {
       var rtn,
           tasks = this.getModel(),
           filteredTasks = tasks.findFiltered(App.searchTerm),
           anyComplete = Tasks.areAnyComplete(filteredTasks);
+
       if (filteredTasks.length) {
         // we've got some tasks to show
-        var children = [<Table className="task-list" cols={TASK_COLUMNS} entries={filteredTasks}/>];
+        var children = [<Table className="task-list three column" cols={TASK_COLUMNS} entries={filteredTasks}/>];
         if (anyComplete) {
           children.push(
-            <Button className="circular negative tiny" icon="remove" onClick={this.triggerWith('remove-completed')}>Remove completed tasks</Button>
+            <Button className="circular tiny" icon="remove" onClick={this.triggerWith('remove-completed')}>Remove completed tasks</Button>
           );
         }
         rtn = <div>{children}</div>;
@@ -357,6 +377,9 @@ var Text = rsui.input.Text,
         } else {
           rtn = <div className="yellow ui message">Woohoo!  There is nothing to do here</div>;
         }
+      }
+      if (this.state && this.state.loading) {
+        rtn = <div className="yellow ui message">Loading your tasks</div>;
       }
 
       return new Loader({loading: this.state && this.state.loading}, rtn);
@@ -428,7 +451,6 @@ var Text = rsui.input.Text,
       view.on('remove-completed', function() {
         tasks.removeComplete();
         tasks.save();
-        this.list();
       }, this);
       this.showView('list', view);
     },
