@@ -173,18 +173,6 @@ var Text = rsui.input.Text,
     url: 'tasks',
     model: Task,
 
-    initialize: function() {
-      // trigger change on the collection when models change
-      var self = this;
-      this.on('add', function(model) {
-        model.on('change', function() {
-          self.trigger('change', model);
-          self.triggerIncomplete();
-        });
-        this.triggerIncomplete();
-      }, this);
-    },
-
     findIncomplete: function() {
       return this.filter(function(task) {
         return !task.get('completed');
@@ -203,19 +191,35 @@ var Text = rsui.input.Text,
       });
     },
 
-    save: function() {
-      this.sync('update', this);
-      this.triggerIncomplete();
+    fetch: function(options) {
+      // don't trigger "add" event for each model when we fetch
+      options = options || {};
+      options.reset = true;
+      return Backbone.Collection.prototype.fetch.apply(this, arguments);
     },
 
-    triggerIncomplete: function() {
-      var incomplete = this.findIncomplete();
-      App.incomplete = incomplete;
-      App.trigger('incomplete:change', incomplete);
+    save: function() {
+      this.sync('update', this);
     }
   });
   Tasks.areAnyComplete = function(models) {
     return !!_.findWhere(_.pluck(models, 'attributes'), {completed: true});
+  };
+  // We'll access the Tasks collection as a singleton
+  Tasks.get = function(options) {
+    var instance = Tasks.instance;
+    if (!instance) {
+      instance = Tasks.instance = new Tasks();
+    }
+    if (options) {
+      if (!Tasks.requiresFetch && instance.hasBeenFetched()) {
+        options.success && options.success(instance);
+      } else {
+        Tasks.requiresFetch = false;
+        instance.fetch(options);
+      }
+    }
+    return instance;
   };
 
 
@@ -300,7 +304,7 @@ var Text = rsui.input.Text,
       event.preventDefault();
       var model = this.getModel();
       if (model.isValid()) {
-        // allow for decoupled task creation
+        // showing how we can use events to allow for controller-based task creation
         this.trigger('save', model);
       }
     }
@@ -349,7 +353,7 @@ var Text = rsui.input.Text,
     }, colClass: 'three wide'},
   ];
   var ShowTasks = React.createClass({
-    mixins: ['view', 'modelLoadOn', 'triggerWith'],
+    mixins: ['view', 'modelLoadOn', 'triggerWith', 'modelChangeListener'],
     events: {
       'app:search': 'doUpdate',
       'model:change': 'doUpdate',
@@ -445,8 +449,7 @@ var Text = rsui.input.Text,
     },
 
     list: function() {
-      var tasks = new Tasks();
-      tasks.fetch();
+      var tasks = Tasks.get({});
       var view = new ShowTasks({model: tasks, loadOn: 'read', updateOn: ['reset', 'change'] });
       view.on('remove-completed', function() {
         tasks.removeComplete();
@@ -461,6 +464,7 @@ var Text = rsui.input.Text,
       createTaskView.on('save', function(task) {
         task.save({}, {
           success: function() {
+            Tasks.requiresFetch = true;
             Backbone.history.navigate('list', true);
           }
         });
@@ -489,6 +493,15 @@ var Text = rsui.input.Text,
   App.on('search', function(term) {
     App.searchTerm = term;
   });
+
+  // keep the incomplete task counter in sync
+  function triggerIncomplete() {
+    var incomplete = Tasks.get().findIncomplete();
+    App.incomplete = incomplete;
+    App.trigger('incomplete:change', incomplete);
+  }
+  Tasks.get().on('change', triggerIncomplete)
+    .on('reset', triggerIncomplete);
 
   // Now, to make it happen
   $(document).ready(function() {
