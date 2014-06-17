@@ -8,6 +8,7 @@ Example project to demonstrate several react and backbone plugins working togeth
 * [React](http://facebook.github.io/react/): A javascript library for building web interfaces
 * [Backbone](http://backbonejs.org/): gives structure to web applications
 
+
 Plugins Demonstrated
 ============================
 
@@ -40,3 +41,15 @@ gulp-web-modules
 [https://github.com/jhudson8/gulp-web-modules]
 
 This not an application plugin but rather the build tool used to run a dev server and generate the deployable artifacts
+
+
+From 0 to Install
+===========================
+```
+npm install -g gulp
+git clone git@github.com:jhudson8/react-plugins-united-example.git
+npm install
+bower install
+gulp wr (or gulp watchrun)
+```
+now browse to http://localhost:8080
