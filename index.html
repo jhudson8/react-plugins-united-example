@@ -1,40 +1,53 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>React Unified Plugins Example</title>
-        <meta name="HandheldFriendly" content="True">
-        <meta name="MobileOptimized" content="320">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="cleartype" content="on">
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
 
-        <link rel="stylesheet" href="css/semantic.min.css">
-        <link rel="stylesheet" href="css/main.css">
+    <link type="text/css" rel="stylesheet" media="all" href="sections/base.css">
+  </head>
+  <body>
 
-        <script src="js/dependencies.min.js"></script>
-        <script>
-            // stuff that we don't want to execute until we are ready
-            var Deferred = [];
-            Deferred.init = function(callback) {
-                Deferred.splice(0, 0, callback);
-            };
-        </script>
-    </head>
-    <body>
+    <div class="ui inverted vertical sidebar menu">
+      <div class="right menu close item">
+        <i class="close icon"></i> <span>Close</span>
+      </div>
+      <div class="header item">
+        Menu
+      </div>
+    </div>
 
-        <div id="loader" class="ui segment" style="height: 200px">
-            <div class="ui active dimmer">
-                <div class="ui large text loader">Loading application...</div>
+    <form id="search-form">
+      <div class="ui fixed transparent inverted main menu">  
+        <div>
+          <div class="right menu">
+            <div class="item">
+              <div class="ui icon input">
+                <input id="search-input" type="text" placeholder="Search...">
+                <i class="search link icon" id="search-submit"></i>
+              </div>
+              <button type="submit" style="display: none"></button>
             </div>
+          </div>
+
+          <div class="item">
+            <a href="#home">
+              <i class="icon home"></i> <span>Home</span>
+            </a>
+          </div>
+          <a class="launch item">
+            <i class="icon list layout"></i> <span>Menu</span>
+          </a>
         </div>
+      </div>
+    </form>
 
-        <div id="example"></div>
+    <div id="page-container" class="pad-all"></div>
+    <div id="page-footer" class="container">
 
-        <!-- For example only -->
-        <script src="js/jsx-transformer.js"></script>
+    </div>
 
-        <!-- I'd like to use $.getScript to put them in the proper order but they need to be jsxParsed -->
-        <script type="text/jsx" src="js/main.js"></script>
+  </body>
 
-    </body>
+  <script type="text/javascript" src="sections/base.js"></script>
+
 </html>
