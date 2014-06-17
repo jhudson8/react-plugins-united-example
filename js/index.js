@@ -71,13 +71,6 @@ $(document).ready(function() {
   new Router();
   Backbone.history.start();
 
-  // global bindings
-  $('.launch.item').on('click', function() {
-    $('.sidebar').sidebar().sidebar('toggle');
-  });
-  $('.sidebar .header').on('click', function() {
-    $('.sidebar').sidebar().sidebar('toggle');
-  });
   $('#search-form').on('submit', function(event) {
     event.preventDefault();
     var term = $('#search-input').val();
