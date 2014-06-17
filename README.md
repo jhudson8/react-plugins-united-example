@@ -33,7 +33,7 @@ backbone-async-event
 ------------
 [https://github.com/jhudson8/backbone-async-event]
 
-Simple Backbone- plugin that emits specific events when ajax requests are made
+Simple Backbone plugin which introduces event based ajax request monitoring
 
 gulp-web-modules
 ------------
