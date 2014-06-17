@@ -52,4 +52,4 @@ npm install
 bower install
 gulp wr (or gulp watchrun)
 ```
-rowse to [http://localhost:8080](http://localhost:8080)
+browse to [http://localhost:8080](http://localhost:8080)
