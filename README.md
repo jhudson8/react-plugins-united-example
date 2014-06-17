@@ -17,7 +17,7 @@ react-mixin-manager
 
 React mixin registration manager which allows mixins to have dependencies
 
-react-react-events
+react-events
 ------------
 [https://github.com/jhudson8/react-events]
 
