@@ -14,17 +14,18 @@
   max-height: 150px;
   transform: rotateY(30deg);
   -webkit-transform: rotateY(30deg);
-  -webkit-transition: -webkit-transform 1s;
-  transition: transform: 0.4s;
+  -webkit-transition-property: margin-top, -webkit-transform;
+  transition-property: margin-top, transform;
+  -webkit-transition-duration: .4s;
+  transition-duration: .4s;
 }
 
 .ui.image-lib img.selected {
-  transform: rotateY(55deg);
-  -webkit-transform: rotateY(55deg);
   opacity: 0.2;
  }
  
  .ui.image-lib img.current {
   transform: rotateY(0deg);
   -webkit-transform: rotateY(0deg);
+  margin-top: -130px;
  }
