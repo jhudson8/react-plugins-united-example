@@ -3,10 +3,9 @@ react-plugins-united-example
 
 Example project to demonstrate several react and backbone plugins working together.
 
-[View the example (Backbone + React) application](http://jhudson8.github.io/react-plugins-united-example/index.html)
+[View the example application](http://jhudson8.github.io/react-plugins-united-example/index.html)
 
-* [React](http://facebook.github.io/react/): A javascript library for building web interfaces
-* [Backbone](http://backbonejs.org/): gives structure to web applications
+This app uses [React](http://facebook.github.io/react/) and [Backbone](http://backbonejs.org/) as well as the plugins listed below with API integration to [Rotten Tomatoes](http://www.rottentomatoes.com/)
 
 
 Plugins Demonstrated
