@@ -48,6 +48,7 @@ From 0 to Install
 ```
 npm install -g gulp
 git clone git@github.com:jhudson8/react-plugins-united-example.git
+cd react-plugins-united-example
 npm install
 bower install
 gulp wr (or gulp watchrun)
