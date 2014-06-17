@@ -5,7 +5,7 @@ Example project to demonstrate several react and backbone plugins working togeth
 
 [View the example application](http://jhudson8.github.io/react-plugins-united-example/index.html)
 
-This app uses [React](http://facebook.github.io/react/) and [Backbone](http://backbonejs.org/) as well as the plugins listed below with API integration to [Rotten Tomatoes](http://www.rottentomatoes.com/)
+This app uses [React](http://facebook.github.io/react/) and [Backbone](http://backbonejs.org/) as well as the plugins listed below with API integration to [Rotten Tomatoes](http://www.rottentomatoes.com/) and [Semantic UI](http://semantic-ui.com/) as the CSS foundation.
 
 
 Plugins Demonstrated
