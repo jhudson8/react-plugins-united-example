@@ -1,0 +1,12 @@
+{
+  "name": "wm-vodeo",
+  "dependencies": {
+    "react-mixin-manager": "*",
+    "backbone-async-event": "*",
+    "backbone": "*",
+    "jquery": "*",
+    "react-backbone": "*",
+    "react-events": "*",
+    "underscore": "*"
+  }
+}

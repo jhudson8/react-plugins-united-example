@@ -1,0 +1,30 @@
+.ui.image-lib {
+  margin-left: 10px;
+  -webkit-perspective: 600px;
+  perspective: 600px;
+  z-index: 0;
+  margin-top: 1em;
+  position: relative;
+  height: 165px;
+  display: inline-block;
+}
+
+.ui.image-lib > img {
+  position: absolute;
+  max-height: 150px;
+  transform: rotateY(30deg);
+  -webkit-transform: rotateY(30deg);
+  -webkit-transition: -webkit-transform 1s;
+  transition: transform: 0.4s;
+}
+
+.ui.image-lib img.selected {
+  transform: rotateY(55deg);
+  -webkit-transform: rotateY(55deg);
+  opacity: 0.2;
+ }
+ 
+ .ui.image-lib img.current {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+ }

@@ -3,7 +3,7 @@ react-plugins-united-example
 
 Example project to demonstrate several react and backbone plugins working together.
 
-[View the example (Backbone + React) ToDo application](http://jhudson8.github.io/react-plugins-united-example/index.html)
+[View the example (Backbone + React) application](http://jhudson8.github.io/react-plugins-united-example/index.html)
 
 * [React](http://facebook.github.io/react/): A javascript library for building web interfaces
 * [Backbone](http://backbonejs.org/): gives structure to web applications
@@ -35,8 +35,8 @@ backbone-async-event
 
 Simple Backbone- plugin that emits specific events when ajax requests are made
 
-react-semantic-ui
+gulp-web-modules
 ------------
-[https://github.com/jhudson8/react-semantic-ui]
+[https://github.com/jhudson8/gulp-web-modules]
 
-Semantic UI React components
+This not an application plugin but rather the build tool used to run a dev server and generate the deployable artifacts

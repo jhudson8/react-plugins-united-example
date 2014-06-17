@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "gulp-web-modules": "*",
+    "reactify": "*",
+    "gwm-lib": "*",
+    "gwm-if": "*",
+    "gwm-uglify": "*"
+  }
+}

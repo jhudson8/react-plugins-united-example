@@ -1,0 +1,219 @@
+body {
+  background-color: #131313;
+  color: #dedede;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  margin: 0;
+}
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  position: relative;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+@media (min-width: 767px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 991px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 768px) {
+  .xshort {
+    width: 6em;
+  }
+  .short {
+    width: 9em;
+  }
+  .normal {
+    width: 14em;
+  }
+  .long {
+    width: 22em;
+  }
+  .xlong {
+    width: 28em;
+  }
+}
+
+
+
+
+#page-container {
+  padding-top: 58px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.menu .item a {
+  text-decoration: none;
+}
+
+.pad-all {
+  padding: 10px;
+}
+
+.segment h3 {
+  color: #686868;
+  font-weight: lighter;
+}
+
+.ui.tile {
+  padding: .5em;
+  text-align: center;
+}
+
+.ui.tile > .body > i {
+  margin-right: 0;
+}
+
+.ui.tile > .body > .attached > i {
+  margin-right: 0;
+}
+
+.spotlight {
+  background: #4f4f4f; /* Old browsers */
+  background: -moz-radial-gradient(center, ellipse cover,  #4f4f4f 1%, #131313 51%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(1%,#4f4f4f), color-stop(51%,#131313)); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  #4f4f4f 1%,#131313 51%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  #4f4f4f 1%,#131313 51%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  #4f4f4f 1%,#131313 51%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  #4f4f4f 1%,#131313 51%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f4f4f', endColorstr='#131313',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.ui.tile.small {
+  height: 240px;
+}
+
+.ui.tile.medium {
+  height: 220px;
+}
+
+.ui.segment {
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.ui.grid.segment-container > .column {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.ui.grid.segment-container > .row {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.margin-top {
+  margin-top:; 1em;
+}
+
+.pad-top {
+  padding-top: 1em;
+}
+
+.pad-all {
+  padding: 1em;
+}
+
+.fillout {
+  width: 100%;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.movie-master-detail .movie-tile-container {
+  position: absolute;
+  bottom: 0;
+  height: 220px;
+  right: 0;
+  left: 0;
+}
+
+.movie-master-detail > .body {
+  position: absolute;
+  top: 50px;
+  right: 1em;
+  left: 1em;
+  bottom: 220px;
+  overflow: scroll;
+}
+
+.movie-details {
+}
+
+.movie-master-detail p {
+  margin-top: 5em;
+  text-align: center;
+}
+
+.movie-details {
+  display: flex;
+}
+
+.movie-details .poster > img {
+  max-width: 150px;
+}
+
+.movie-details .body {
+  padding-left: 18px;
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+
+.movie-details td {
+  vertical-align: top;
+}
+
+.movie-details h2 {
+  border-bottom: solid 1px #fff;
+}
+
+.mobile-movie-list > div {
+  border-bottom: solid 1px #434343;
+  padding: 8px 0 8px 0;
+  display: table;
+  width: 100%;
+}
+
+.mobile-movie-list > div > .movie-thumb {
+  display: table-cell;
+  vertical-align: middle;
+  width: 42px;
+}
+
+.movie-thumb > img {
+  max-width: 35px;
+  max-height: 50px;
+}
+
+.mobile-movie-list > div > .movie-description {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+@media (max-width: 480px) {
+  .ui.menu > .container > .item > span {
+    display: none;
+  }
+  .ui.menu > .right.menu.item > span {
+    display: none;
+  }
+
+  .ui.menu:not(.vertical) .item > .input {
+    width: 10em;
+  }
+}
+
+@media (max-width: 350px) {
+  .ui.menu:not(.vertical) .item > .input {
+    width: 5em;
+  }
+}
