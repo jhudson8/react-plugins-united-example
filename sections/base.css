@@ -1,7 +1,5 @@
 .ui.image-lib {
   margin-left: 10px;
-  -webkit-perspective: 600px;
-  perspective: 600px;
   z-index: 0;
   margin-top: 1em;
   position: relative;
@@ -12,10 +10,10 @@
 .ui.image-lib > img {
   position: absolute;
   max-height: 150px;
-  transform: rotateY(30deg);
-  -webkit-transform: rotateY(30deg);
-  -webkit-transition-property: margin-top, -webkit-transform;
-  transition-property: margin-top, transform;
+  transform: rotateY(30deg) rotateZ(358deg);
+  -webkit-transform: rotateY(30deg) rotateZ(358deg);
+  -webkit-transition-property: margin-top, -webkit-transform, opacity;
+  transition-property: margin-top, transform, opacity;
   -webkit-transition-duration: .4s;
   transition-duration: .4s;
 }
@@ -25,8 +23,8 @@
  }
  
  .ui.image-lib img.current {
-  transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg) rotateZ(359.9deg);
+  -webkit-transform: rotateY(0deg) rotateZ(359.9deg);
   margin-top: -60px;
  }
 /*
