@@ -12,6 +12,7 @@ body {
   padding-left: 1em;
   padding-right: 1em;
 }
+
 @media (min-width: 767px) {
   .container {
     width: 750px;
@@ -39,9 +40,24 @@ body {
     width: 28em;
   }
 }
+@media (max-width: 766px) {
+  .hide-mobile {
+    display: none;
+  }
+}
+@media (max-width: 450px) {
+  #search-input {
+    width: 8em;
+  }
+}
 
+.attribution {
+  text-align: center;
+}
 
-
+.attribution a {
+  color: #fff;
+}
 
 #page-container {
   padding-top: 58px;
@@ -197,23 +213,4 @@ h2 {
 .mobile-movie-list > div > .movie-description {
   display: table-cell;
   vertical-align: middle;
-}
-
-@media (max-width: 480px) {
-  .ui.menu > .container > .item > span {
-    display: none;
-  }
-  .ui.menu > .right.menu.item > span {
-    display: none;
-  }
-
-  .ui.menu:not(.vertical) .item > .input {
-    width: 10em;
-  }
-}
-
-@media (max-width: 350px) {
-  .ui.menu:not(.vertical) .item > .input {
-    width: 5em;
-  }
 }

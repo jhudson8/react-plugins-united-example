@@ -27,5 +27,5 @@
  .ui.image-lib img.current {
   transform: rotateY(0deg);
   -webkit-transform: rotateY(0deg);
-  margin-top: -130px;
+  margin-top: -60px;
  }

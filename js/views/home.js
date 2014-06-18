@@ -39,6 +39,9 @@ module.exports = React.createClass({
         <div className="ui three column stackable grid segment-container">
           <div className="column eight wide pad-top">
             {movieTiles}
+            <p className="attribution">
+              courtesy of <a href="http://www.rottentomatoes.com/" target="_blank">Rotten Tomatoes</a>
+            </p>
           </div>
 
           <div className="column eight wide pad-top">
