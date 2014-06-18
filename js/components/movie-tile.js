@@ -46,7 +46,7 @@ module.exports = React.createClass({
       if (current.data('index') == index) {
         // remove the current selection
         current.removeClass('current');
-        items.removeClass('selected');
+        items.removeClass('sibling-selected');
 
         this.trigger('deselected', movie);
       } else {
@@ -62,8 +62,8 @@ module.exports = React.createClass({
         if (index < max - 1) {
           $(items[index+1]).addClass('next');
         }
-        items.addClass('selected');
-        $(items[index]).addClass('current').removeClass('selected');
+        items.addClass('sibling-selected');
+        $(items[index]).addClass('current').removeClass('sibling-selected');
 
         this.trigger('selected', movie);
       }

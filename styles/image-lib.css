@@ -20,7 +20,7 @@
   transition-duration: .4s;
 }
 
-.ui.image-lib img.selected {
+.ui.image-lib img.sibling-selected {
   opacity: 0.2;
  }
  
