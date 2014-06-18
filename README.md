@@ -3,10 +3,9 @@ react-plugins-united-example
 
 Example project to demonstrate several react and backbone plugins working together.
 
-[View the example (Backbone + React) application](http://jhudson8.github.io/react-plugins-united-example/index.html)
+[View the example application](http://jhudson8.github.io/react-plugins-united-example/index.html)
 
-* [React](http://facebook.github.io/react/): A javascript library for building web interfaces
-* [Backbone](http://backbonejs.org/): gives structure to web applications
+This app uses [React](http://facebook.github.io/react/) and [Backbone](http://backbonejs.org/) as well as the plugins listed below with API integration to [Rotten Tomatoes](http://www.rottentomatoes.com/) and [Semantic UI](http://semantic-ui.com/) as the CSS foundation.
 
 
 Plugins Demonstrated
@@ -18,7 +17,7 @@ react-mixin-manager
 
 React mixin registration manager which allows mixins to have dependencies
 
-react-react-events
+react-events
 ------------
 [https://github.com/jhudson8/react-events]
 
@@ -34,7 +33,7 @@ backbone-async-event
 ------------
 [https://github.com/jhudson8/backbone-async-event]
 
-Simple Backbone- plugin that emits specific events when ajax requests are made
+Simple Backbone plugin which introduces event based ajax request monitoring
 
 gulp-web-modules
 ------------
