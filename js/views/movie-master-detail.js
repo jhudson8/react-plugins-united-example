@@ -1,14 +1,28 @@
 /** @jsx React.DOM */
 
-/**
- * Show a list of movies with a title.  When a movie is selected, display the specific movie content
- */
+
 
 var MovieTile = require('../components/movie-tile'),
     MovieView = require('./movie-detail'),
-    MobileMasterDetail = require('./mobile-movie-master-detail');
+    Loader = require('../components/loading-spinner'),
+    ResponsiveContainer = require('../components/responsive-container');
 
+// export a simple wrapper that will use different component implementations based on the device form factor
 module.exports = React.createClass({
+  render: function() {
+    return new ResponsiveContainer(_.defaults({
+      // class definitions are below
+      standard: Standard,
+      mobile: Mobile
+    }, this.props));
+  }
+});
+
+
+/**
+ * Show a list of movies with a title.  When a movie is selected, display the specific movie content
+ */
+var Standard = React.createClass({
   // "events" mixin provides support for declarative events
   // see https://github.com/jhudson8/react-events
   // "modelAsyncAware" will set state.loading=true if the model is currently performing any ajax activity
@@ -17,9 +31,6 @@ module.exports = React.createClass({
 
   // this is available because of the "events" mixin (https://github.com/jhudson8/react-events)
   events: {
-    // re-render the layout when the window resizes but only every 300 ms rather than on every resize event
-    '*debounce(300):window:resize': 'forceUpdate',
-
     // listen for the "selected" event on the component identified by the ref prop value of "movies"
     'ref:movies:selected': function(movie) {
       this.setState({selectedMovie: movie});
@@ -35,11 +46,6 @@ module.exports = React.createClass({
     var movie = this.state.selectedMovie,
         collection = this.getModel(),
         children = [];
-    var windowWidth = $(window).width();
-    if (windowWidth < 480) {
-      return new MobileMasterDetail({model: collection, title: this.props.title});
-    }
-
     if (movie) {
       children.push(
         <MovieView model={movie}/>
@@ -65,6 +71,41 @@ module.exports = React.createClass({
           {children}
         </div>
         <div className="movie-tile-container">{movieTile}</div>
+      </div>
+    );
+  }
+});
+
+
+/**
+ * Movie list page specific for a mobile device.  Currently it is just a list and clicking on an item won't
+ * do anything but that is intended to change in the future.
+ */
+var Mobile = React.createClass({
+  mixins: ['modelAsyncAware'],
+
+  render: function() {
+    var collection = this.getModel(),
+        children = collection.map(function(model) {
+          return (
+            <a className="link-item" href={'#movie/' + model.id}>
+              <div className="movie-thumb">
+                <img src={model.get('posters').thumbnail}/>
+              </div>
+              <div className="movie-description">
+                {model.get('title')}
+              </div>
+            </a>
+          );
+        });
+    return (
+      <div>
+        <h2>{this.props.title}</h2>
+        <Loader model={collection}>
+          <div className="mobile-movie-list">
+            {children}
+          </div>
+        </Loader>
       </div>
     );
   }

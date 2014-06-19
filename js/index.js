@@ -13,7 +13,7 @@ Backbone.async.on('async', function(eventName, model, events, options) {
 var HomeView = require('./views/home');
 var Movie = require('./models/movie');
 var Movies = require('./collections/movies');
-var MovieView = require('./views/movie');
+var MovieView = require('./views/movie-detail');
 var MovieMasterDetail = require('./views/movie-master-detail');
 
 // initialze the Backbone router
@@ -36,8 +36,8 @@ var Router = Backbone.Router.extend({
   // show details for a specific movie
   showMovie: function(id) {
     var movie = new Movie({id: id});
-    var view = new MovieView({model: movie});
     movie.fetch();
+    var view = new MovieView({model: movie});
     showView(view);
   },
 

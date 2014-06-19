@@ -12,7 +12,7 @@ module.exports = React.createClass({
 
   render: function() {
     if (this.state.loading) {
-      return <div className="fillout"><i className="huge loading icon"/></div>;
+      return <div className="ui segment loading"><i className="huge loading icon"/></div>;
     } else {
       return this.props.children;
     }

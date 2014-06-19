@@ -56,7 +56,7 @@ module.exports = React.createClass({
       var el = $(this.getDOMNode()),
           items = el.find('img'),
           current = el.find('.selected');
-      if (current.data('index') == index) {
+      if (current.data('index') === index) {
         // remove the current selection
         current.removeClass('selected');
         items.removeClass('sibling-of-selected');
