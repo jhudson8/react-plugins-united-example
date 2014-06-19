@@ -1,7 +1,7 @@
 react-plugins-united-example
 ============================
 
-Example project to demonstrate several react and backbone plugins working together.
+Something more than a To Do app to demonstrate several react and backbone plugins working together.
 
 [View the example application](http://jhudson8.github.io/react-plugins-united-example/index.html)
 
