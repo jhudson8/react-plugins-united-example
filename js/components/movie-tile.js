@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 
-var INDEX_MAP = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'],
-    MAX = 7,
+var MAX = 7,
     BASE_WIDTH = 135,
     INCREMENT_WIDTH = 45,
     INCREMENT_MARGIN = 45,
