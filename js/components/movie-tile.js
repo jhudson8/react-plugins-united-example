@@ -16,8 +16,8 @@ var MAX = 7,
 module.exports = React.createClass({
   // "events" mixin provides support for declarative events
   // see https://github.com/jhudson8/react-events
-  // "modelChangeAware" mixins listen for change events on the associated model and re-renders the component
-  mixins: ['events', 'modelChangeAware'],
+  // "modelAsyncAware" mixins listen for ajax activity and re-renders the component
+  mixins: ['events', 'modelAsyncAware'],
 
   // this is available because of the "events" mixin (https://github.com/jhudson8/react-events)
   events: {
@@ -27,6 +27,7 @@ module.exports = React.createClass({
 
   render: function() {
     var props = this.props, children = [], collection = this.getModel(), movie, title, onClick;
+
     var windowWidth = $(window).width();
     var offset = 0,
         containerMax = props.fullPage ? (windowWidth / INCREMENT_MARGIN - 5) : windowWidth < 480 ? 4 : MAX,
@@ -42,6 +43,11 @@ module.exports = React.createClass({
     }
 
     var width = BASE_WIDTH + ((max - 1) * INCREMENT_WIDTH);
+    if (collection.hadFetchError) {
+      children = <div>Movies could not be loaded.<br/>Please refresh to try again.</div>;
+      width = '100%';
+    }
+
     return (
       <Tile size="small" style={this.props.style} className="spotlight" title={props.title} icon={props.icon} model={collection}>
         <div style={{width: width}} className='ui image-lib'>

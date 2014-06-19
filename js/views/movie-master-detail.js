@@ -57,7 +57,9 @@ var Standard = React.createClass({
         if (collection.length) {
           children.push('Select a movie to see details');
         } else {
-          children.push('No movies were found');
+          if (!collection.hadFetchError) {
+            children.push('No movies were found');
+          }
         }
       }
       children = [<p>{children}</p>];
@@ -78,8 +80,7 @@ var Standard = React.createClass({
 
 
 /**
- * Movie list page specific for a mobile device.  Currently it is just a list and clicking on an item won't
- * do anything but that is intended to change in the future.
+ * Movie list page specific for a mobile device.
  */
 var Mobile = React.createClass({
   mixins: ['modelAsyncAware'],

@@ -21,11 +21,9 @@
       return this.transferPropsTo(React.DOM.img());
     } else {
       if (this.state.loading !== src) {
-        console.log('loading new image: ' + src);
         this.state.loading = src;
         var img = new Image();
         img.addEventListener('load', _.bind(function() {
-          console.log('loaded');
           if (this.isMounted()) {
             this.setState({
               loaded: src,
@@ -39,7 +37,7 @@
         img.src = src; 
       }
 
-      return (<div className="ui active large dimmer"><div className="ui text loader">Loading image...</div></div>);
+      return (<div className="ui active large pad-top"><i className="huge icon loading"/><br/>Loading image...</div>);
     }
   }
  });

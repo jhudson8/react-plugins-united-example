@@ -31,7 +31,7 @@ var Body = React.createClass({
 
     return (
       <div className="movie-detail two column stackable ui grid">
-        <div className="column ten wide">
+        <div className="column eleven wide">
           <div className="ui segment">
               <h2>{movie.get('title')}</h2>
               <div className="synopsis">{movie.get('synopsis')}</div>
@@ -41,7 +41,7 @@ var Body = React.createClass({
               <Section title="Cast">{_.map(movie.get('abridged_cast'), function(member) {return member.name;}).join(', ')}</Section>
             </div>
         </div>
-        <div className="column six wide">
+        <div className="column five wide">
           <div className="ui segment center">
             <Img src={movie.get('posters').original} alt={movie.get('title')} className="ui image"/>
           </div>
