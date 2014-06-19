@@ -1,5 +1,11 @@
 /** @jsx React.DOM */
 
+/**
+ * Main entry point of the application.  This is where we set up the Backbone router and
+ * do some global init and bindings
+ */
+
+// set a global timeout for all ajax activity
 Backbone.async.on('async', function(eventName, model, events, options) {
   options.timeout = 3000;
 });
@@ -10,6 +16,7 @@ var Movies = require('./collections/movies');
 var MovieView = require('./views/movie');
 var MovieMasterDetail = require('./views/movie-master-detail');
 
+// initialze the Backbone router
 var Router = Backbone.Router.extend({
   routes: {
     '': 'home',
@@ -20,11 +27,13 @@ var Router = Backbone.Router.extend({
     'search/movies/:term': 'searchMovies'
   },
 
+  // show the home page
   home: function() {
     var view = new HomeView();
     showView(view);
   },
 
+  // show details for a specific movie
   showMovie: function(id) {
     var movie = new Movie({id: id});
     var view = new MovieView({model: movie});
@@ -32,6 +41,7 @@ var Router = Backbone.Router.extend({
     showView(view);
   },
 
+  // search for movies by a specific search term
   searchMovies: function(searchTerm) {
     var collection = new Movies(undefined, {searchTerm: searchTerm}),
         view = new MovieMasterDetail({model: collection, title: 'Search: ' + searchTerm});
@@ -39,6 +49,7 @@ var Router = Backbone.Router.extend({
     showView(view);
   },
 
+  // list movies of a certain type.  type keywords are (opening|newDVD|inTheatres)
   listMovies: function(type) {
     var collection, title;
     if (type === 'opening-soon') {
@@ -57,16 +68,19 @@ var Router = Backbone.Router.extend({
   }
 });
 
+// utility method to show a view as the main page
 function showView(view) {
   var el = document.getElementById('page-container');
   React.unmountComponentAtNode(el);
   React.renderComponent(view, el);
 }
 
+// initialize when the document is ready
 $(document).ready(function() {
   new Router();
   Backbone.history.start();
 
+  // when the search term is entered, kick off the search routing
   $('#search-form').on('submit', function(event) {
     event.preventDefault();
     var term = $('#search-input').val();

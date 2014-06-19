@@ -1,5 +1,12 @@
 /** @jsx React.DOM */
 
+/**
+ * Show a list of movies by displaying the cover art.  If the "interactive" prop is set,
+ * add the "selected" class to the selected movie and "sibling-of-selected" to all other movies and
+ * trigger the "selected" event with the movie model as the parameter.  If the movie is clicked again
+ * trigger the "deselected" event with the movie model as the parameter.
+ */
+
 var MAX = 7,
     BASE_WIDTH = 135,
     INCREMENT_WIDTH = 45,
@@ -7,8 +14,14 @@ var MAX = 7,
     Tile = require('./tile');
 
 module.exports = React.createClass({
+  // "events" mixin provides support for declarative events
+  // see https://github.com/jhudson8/react-events
+  // "modelChangeAware" mixins listen for change events on the associated model and re-renders the component
   mixins: ['events', 'modelChangeAware'],
+
+  // this is available because of the "events" mixin (https://github.com/jhudson8/react-events)
   events: {
+    // re-render the layout when the window resizes but only every 300 ms rather than on every resize event
     '*debounce(300):window:resize': 'forceUpdate'
   },
 
@@ -23,6 +36,7 @@ module.exports = React.createClass({
       movie = collection.at(i);
       title = movie.get('title');
       onClick = this.props.interactive ? _.bind(this.onClick(movie, i, offset, max), this) : undefined;
+
       children.push(<img data-index={i} style={{left: offset + 'px'}} src={movie.get('posters').detailed} alt={title} onClick={onClick}/>);
       offset += INCREMENT_MARGIN;
     }
@@ -41,29 +55,17 @@ module.exports = React.createClass({
     return function() {
       var el = $(this.getDOMNode()),
           items = el.find('img'),
-          current = el.find('.current');
+          current = el.find('.selected');
       if (current.data('index') == index) {
         // remove the current selection
-        current.removeClass('current');
-        items.removeClass('sibling-selected');
-
+        current.removeClass('selected');
+        items.removeClass('sibling-of-selected');
         this.trigger('deselected', movie);
       } else {
-        el.find('.previous').removeClass('previous');
-        el.find('.next').removeClass('next');
-        current.removeClass('current');
-
-        var prevLeft = ((index-1) * INCREMENT_MARGIN ) - 15;
-        var nextLeft = ((index+1) * (INCREMENT_MARGIN)) + 15;
-        if (index > 0) {
-          $(items[index-1]).addClass('previous');
-        }
-        if (index < max - 1) {
-          $(items[index+1]).addClass('next');
-        }
-        items.addClass('sibling-selected');
-        $(items[index]).addClass('current').removeClass('sibling-selected');
-
+        // select another
+        current.removeClass('selected');
+        items.addClass('sibling-of-selected');
+        $(items[index]).addClass('selected').removeClass('sibling-of-selected');
         this.trigger('selected', movie);
       }
     }

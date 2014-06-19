@@ -1,3 +1,7 @@
+/**
+ * Collection used to retrieve a set of movies
+ */
+
 var Movie = require('../models/movie');
 
 module.exports = Backbone.Collection.extend({

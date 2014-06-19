@@ -1,10 +1,16 @@
 /** @jsx React.DOM */
 
+/**
+ * The home page.  Show a portal-like page which displays some static content and dynamic movie data pulled
+ * froom rotten tomatoes.
+ */
+
 var Movies = require('../collections/movies');
 var MovieTile = require('../components/movie-tile');
 var Tile = require('../components/tile');
 
 module.exports = React.createClass({
+  // create and fetch the movie data
   getInitialState: function() {
     var openingSoon = new Movies(undefined, {type: 'opening'});
     var inTheatres = new Movies(undefined, {type: 'inTheatres'});

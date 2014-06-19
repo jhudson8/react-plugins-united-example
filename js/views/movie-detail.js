@@ -1,8 +1,14 @@
 /** @jsx React.DOM */
 
+/**
+ * Show the details of a specific movie.
+ */
+
 var Loader = require('../components/loading-spinner');
 
 module.exports = React.createClass({
+  // "modelAware" exposes simple getModel/setModel methods to the component (models can be set using the "model" prop)
+  // see https://github.com/jhudson8/react-backbone
   mixins: ['modelAware'],
 
   render: function() {

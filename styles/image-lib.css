@@ -18,11 +18,11 @@
   transition-duration: .4s;
 }
 
-.ui.image-lib img.sibling-selected {
+.ui.image-lib img.sibling-of-selected {
   opacity: 0.2;
  }
  
- .ui.image-lib img.current {
+ .ui.image-lib img.selected {
   transform: rotateY(0deg) rotateZ(359.9deg);
   -webkit-transform: rotateY(0deg) rotateZ(359.9deg);
   margin-top: -60px;

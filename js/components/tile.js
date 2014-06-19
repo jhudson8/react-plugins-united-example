@@ -1,5 +1,9 @@
 /** @jsx React.DOM */
 
+/**
+ * Reusable titled section for the home page
+ */
+
 var Loader = require('./loading-spinner');
 
 module.exports = React.createClass({

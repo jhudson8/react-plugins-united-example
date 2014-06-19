@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 
 module.exports = React.createClass({
+  // "modelAsyncAware" will set state.loading=true if the model is currently performing any ajax activity
+  // see https://github.com/jhudson8/react-backbone
   mixins: ['modelAsyncAware'],
 
   render: function() {
