@@ -36,10 +36,6 @@ var Router = Backbone.Router.extend({
     var collection = new Movies(undefined, {searchTerm: searchTerm}),
         view = new MovieMasterDetail({model: collection, title: 'Search: ' + searchTerm});
     collection.fetch();
-    collection.on('reset', function() {
-      console.log('REEST');
-      console.log(collection);
-    });
     showView(view);
   },
 
