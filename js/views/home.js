@@ -13,15 +13,15 @@ module.exports = React.createClass({
   // create and fetch the movie data
   getInitialState: function() {
     var openingSoon = new Movies(undefined, {type: 'opening'});
-    var inTheatres = new Movies(undefined, {type: 'inTheatres'});
+    var inTheaters = new Movies(undefined, {type: 'inTheaters'});
     var newDVD = new Movies(undefined, {type: 'newDVD'});
     openingSoon.fetch();
-    inTheatres.fetch();
+    inTheaters.fetch();
     newDVD.fetch();
 
     return {
       openingSoon: openingSoon,
-      inTheatres: inTheatres,
+      inTheaters: inTheaters,
       newDVD: newDVD
     };
   },
@@ -29,7 +29,7 @@ module.exports = React.createClass({
   render: function() {
     var state = this.state;
     var sections = [
-      {id: 'inTheatres', title: 'In Theatres', icon: 'video', href: 'movies/in-theaters'},
+      {id: 'inTheaters', title: 'In Theaters', icon: 'video', href: 'movies/in-theaters'},
       {id: 'openingSoon', title: 'Opening Soon', icon: 'calendar', href: 'movies/opening-soon'},
       {id: 'newDVD', title: 'New on DVD', icon: 'play sign', href: 'movies/new-dvd'}
     ];

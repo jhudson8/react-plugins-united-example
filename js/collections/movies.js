@@ -20,7 +20,7 @@ module.exports = Backbone.Collection.extend({
       var type = this.type;
       if (type === 'opening') {
         url += 'lists/movies/opening.json?';
-      } else if (type === 'inTheatres') {
+      } else if (type === 'inTheaters') {
         url += 'lists/movies/in_theaters.json?';
       } else if (type === 'newDVD') {
         url += 'lists/dvds/new_releases.json?';

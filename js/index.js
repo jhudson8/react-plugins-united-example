@@ -49,7 +49,7 @@ var Router = Backbone.Router.extend({
     showView(view);
   },
 
-  // list movies of a certain type.  type keywords are (opening|newDVD|inTheatres)
+  // list movies of a certain type.  type keywords are (opening|newDVD|inTheaters)
   listMovies: function(type) {
     var collection, title;
     if (type === 'opening-soon') {
@@ -59,8 +59,8 @@ var Router = Backbone.Router.extend({
       collection = new Movies(undefined, {type: 'newDVD'});
       title = 'New on DVD';
     } else {
-      collection = new Movies(undefined, {type: 'inTheatres'});
-      title = 'In Theatres Now';
+      collection = new Movies(undefined, {type: 'inTheaters'});
+      title = 'In Theaters Now';
     }
     collection.fetch();
     var view = new MovieMasterDetail({model: collection, title: title});
