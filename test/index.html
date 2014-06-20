@@ -1,0 +1,54 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mocha Tests</title>
+  <link rel="stylesheet" href="mocha.css" />
+
+  <script src="js/mocha.js"></script>
+  <script src="js/chai.js"></script>
+  <script src="js/sinon.js"></script>
+</head>
+<body>
+  <div id="mocha"></div>
+
+  <script src="js/init.js"></script>
+  <script>mocha.setup('bdd');</script>
+  <script src="base.js"></script>
+
+  <script>
+    // set up the globals
+    var expect = chai.expect;
+
+    // set up / tear down testing utilities
+    beforeEach(function() {
+      this.xhr = sinon.useFakeXMLHttpRequest();
+      var requests = this.requests = [];
+      this.stubs = [];
+
+      this.xhr.onCreate = function (xhr) {
+          requests.push(xhr);
+      };
+
+      this.clock = sinon.useFakeTimers();
+
+      this.stub = function(obj, method) {
+        var stub = sinon.stub(obj, method);
+        this.stubs.push(stub);
+        return stub;
+      };
+    });
+
+    afterEach(function() {
+      this.xhr.restore();
+      this.clock.restore();
+      for (var i=0; i<this.stubs.length; i++) {
+        this.stubs[i].restore();
+      }
+    });
+
+    // run the tests
+    mocha.checkLeaks();
+    mocha.run();
+  </script>
+</body>
+</html>
