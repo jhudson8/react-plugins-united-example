@@ -42,10 +42,11 @@ gulp-web-modules
 This not an application plugin but rather the build tool used to run a dev server and generate the deployable artifacts
 
 
-From 0 to Install
+Local Install
 ===========================
 ```
 npm install -g gulp
+npm install -g bower
 git clone git@github.com:jhudson8/react-plugins-united-example.git
 cd react-plugins-united-example
 npm install

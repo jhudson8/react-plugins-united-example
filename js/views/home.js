@@ -42,7 +42,7 @@ module.exports = React.createClass({
 
     return (
       <div>
-        <div className="ui three column stackable grid segment-container">
+        <div className="ui two column stackable grid segment-container">
           <div className="column eight wide pad-top">
             {movieTiles}
             <p className="attribution">

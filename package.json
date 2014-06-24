@@ -4,6 +4,16 @@
     "reactify": "*",
     "gwm-lib": "*",
     "gwm-if": "*",
-    "gwm-uglify": "*"
+    "gwm-uglify": "*",
+    "jsdom": "*",
+    "jquery": "*",
+    "backbone": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "sinon": "*"
+  },
+  "scripts": {
+    "test": "mocha build/test/index.js"
   }
 }

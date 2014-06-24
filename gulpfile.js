@@ -12,9 +12,9 @@ gwm({
   plugins: [
     gwmLib({
       base: [
-        {dev: 'underscore.js', prod: 'underscore.min.js'},
-        {dev: 'bower:jquery', prod: 'bower:jquery/dist/jquery.min.js'},
-        {dev: 'backbone.js', prod: 'backbone.min.js'},
+        {dev: 'underscore.js', prod: 'underscore.min.js', includeIf: '!window.ss'},
+        {dev: 'bower:jquery', prod: 'bower:jquery/dist/jquery.min.js', includeIf: '!window.ss'},
+        {dev: 'backbone.js', prod: 'backbone.min.js', includeIf: '!window.ss'},
         {dev: 'semantic.js', prod: 'semantic.min.js'},
         {dev: 'react.js', prod: 'react.min.js'},
         {dev: 'bower:/backbone-async-event/backbone-async-event.js', prod: 'bower:/backbone-async-event/backbone-async-event.min.js'},

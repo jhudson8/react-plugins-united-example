@@ -27,7 +27,6 @@ var Body = React.createClass({
 
   render: function() {
     var movie = this.getModel();
-    console.log(movie);
 
     return (
       <div className="movie-detail two column stackable ui grid">
