@@ -42,21 +42,12 @@ module.exports = React.createClass({
 
     return (
       <div>
-        <div className="ui two column stackable grid segment-container">
+        <div className="ui one column stackable grid segment-container">
           <div className="column eight wide pad-top">
             {movieTiles}
             <p className="attribution">
               courtesy of <a href="http://www.rottentomatoes.com/" target="_blank">Rotten Tomatoes</a>
             </p>
-          </div>
-
-          <div className="column eight wide pad-top">
-            <Tile size="small" title="Your Music" icon="headphones">
-              <i className="massive icon headphones"></i>
-            </Tile>
-            <Tile size="small" title="Your Books" icon="book">
-              <i className="massive icon book"></i>
-            </Tile>
           </div>
         </div>
       </div>
